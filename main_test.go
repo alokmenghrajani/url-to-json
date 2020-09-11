@@ -1,11 +1,24 @@
 package main
 
 import (
+	"bou.ke/monkey"
 	"errors"
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
+
+func TestProcess(t *testing.T) {
+	fakeExit := func(int) {
+		panic("os.Exit called")
+	}
+	patch := monkey.Patch(os.Exit, fakeExit)
+	defer patch.Unpatch()
+
+	assert.Panics(t, func() { process([]string{"git-to-json"}) })
+	assert.NotPanics(t, func() { process([]string{"git-to-json", "/foobar"}) })
+}
 
 func TestHttpsUrl(t *testing.T) {
 	json := urlToJson("https://joe:hunter@example.com:443/my///pa/th/foo.html?a=1&b=2#magic")
