@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/url"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/whilp/git-urls"
@@ -22,7 +23,7 @@ type JsonURL struct {
 	Username string     `json:"username"`
 	Password string     `json:"password"`
 	Host     string     `json:"host"`
-	Port     string     `json:"port"`
+	Port     uint16     `json:"port"`
 	Path     []string   `json:"path"`
 	Query    url.Values `json:"query"`
 	Fragment string     `json:"fragment"`
@@ -34,29 +35,38 @@ func main() {
 		os.Exit(-1)
 	}
 
-	u, err := url.Parse(os.Args[1])
+	jsonUrl := urlToJson(os.Args[1])
+	jsonString, err := json.Marshal(jsonUrl)
+	panicOnError(err)
+	fmt.Println(string(jsonString))
+}
+
+func urlToJson(urlString string) JsonURL {
+	u, err := url.Parse(urlString)
 	if err != nil {
 		// url.Parse fails on git urls, which are common. So try to parse with giturls.
-		u, err = giturls.Parse(os.Args[1])
+		u, err = giturls.Parse(urlString)
 		panicOnError(err)
 	}
 
+	// Convert the fields we care about from url.URL to JsonURL
 	jsonUrl := JsonURL{
 		Scheme:   u.Scheme,
 		Username: u.User.Username(),
 		Host:     u.Hostname(),
-		Port:     u.Port(),
 		Fragment: u.Fragment,
 	}
 	jsonUrl.Password, _ = u.User.Password()
+	port, _ := strconv.Atoi(u.Port())
+	jsonUrl.Port = uint16(port)
+
+	// Split part, ignoring empty
 	jsonUrl.Path = strings.FieldsFunc(u.Path, func(c rune) bool { return c == '/' })
+	// Convert query string to map
 	jsonUrl.Query, err = url.ParseQuery(u.RawQuery)
 	panicOnError(err)
 
-	jsonString, err := json.Marshal(jsonUrl)
-	panicOnError(err)
-
-	fmt.Println(string(jsonString))
+	return jsonUrl
 }
 
 func panicOnError(err error) {
