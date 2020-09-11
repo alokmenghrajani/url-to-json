@@ -10,5 +10,11 @@ $ url-to-json git@github.com:alokmenghrajani/url-to-json.git | jq -r .host
 github.com
 ```
 
-# Building
+# Building & running
+Ready to grab binaries for Linux, MacOS X, and Windows are automatically made available on the [release](https://github.com/alokmenghrajani/url-to-json/releases) page. If you however want to build url-to-json from source, it should be fairly easy:
+
+```
+git clone https://github.com/alokmenghrajani/url-to-json.git
 go build
+./url-to-json
+```
