@@ -18,7 +18,7 @@ import (
 // $ url-to-json git@github.com:alokmenghrajani/url-to-json.git | jq -r .host
 // github.com
 
-type JsonURL struct {
+type jsonURL struct {
 	Scheme   string     `json:"scheme"`
 	Username string     `json:"username"`
 	Password string     `json:"password"`
@@ -41,7 +41,7 @@ func main() {
 	fmt.Println(string(jsonString))
 }
 
-func urlToJson(urlString string) JsonURL {
+func urlToJson(urlString string) jsonURL {
 	u, err := url.Parse(urlString)
 	if err != nil {
 		// url.Parse fails on git urls, which are common. So try to parse with giturls.
@@ -50,7 +50,7 @@ func urlToJson(urlString string) JsonURL {
 	}
 
 	// Convert the fields we care about from url.URL to JsonURL
-	jsonUrl := JsonURL{
+	jsonUrl := jsonURL{
 		Scheme:   u.Scheme,
 		Username: u.User.Username(),
 		Host:     u.Hostname(),
