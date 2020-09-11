@@ -33,6 +33,6 @@ func TestGitUrl(t *testing.T) {
 }
 
 func TestPanicOnError(t *testing.T) {
-	assert.Panics(t, func() { panicOnError(errors.New("foobar"))})
-	assert.NotPanics(t, func() { panicOnError(nil)})
+	assert.Panics(t, func() { panicOnError(errors.New("foobar")) })
+	assert.NotPanics(t, func() { panicOnError(nil) })
 }

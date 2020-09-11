@@ -1,0 +1,32 @@
+---
+
+language: go
+
+go:
+  - '1.15'
+
+deploy:
+  provider: releases
+  api_key:
+    secure: XMb40v8yLyTUB4ev/OrfywjrIbsyeOhsMUJWO4taf8fRPa7lcUUo3koSfnHMuRNo6VmiDSES+OhJn0pAsgfKvRLkSb7oYZVLWsZ+mCuPwWf5OyaFZjb7CD7aLi4VZA5Cha27qzcSRLi4T3FvB27MdRgVlmSZvADVBrf0i83xd1qpnTobYqRciZEJjTgBEF8U2a8VRaBQdITTlPWW0O7jCHCW1YV6TNK2iJL7y7S0hdtl0Cc0pxjXhe5DPe7Ch86Rc9674xJ0LIyfsPgjjy0gL+b6nyPedCs3dE0dc7UnwcZ8sPw1bVyttf1yC+0dNu25L/QQEpYa0iYNREDarV9mSprPSnKreGT8ZVmes3i3AHmPhjQT5ZzqkkGJTXPIfLFlfuG4bDrclkNDE3mvFewGUmhjcoaS2MRjKoQrxVCSFdvmdB6kXjGI70ZYt+rhweuv/PCMJg07Xpth6/4+tPhAboAXJrclSwNJeLxbqRzv9fXmZDZVpEto7cPUk3SG9C+ACRX6YG4dtxsL4B8rOwcFO0s9zAMfd9a1o6+VHcRvFMHmQmPexZrJ1jsS2HrxXbDAXlxUtWswpAdpqGSvTpdt2dbEj4cHoIIu2jza/9Ojw6PRoVxh3KhZkdvwxxEa7yxAyHTJkVRBo5oeAqEcQ0J4zosIcEwNcgp2+SoB4MHAyEw=
+  file:
+    - url-to-json-${TRAVIS_TAG}-linux-amd64
+    - url-to-json-${TRAVIS_TAG}-osx-amd64
+    - url-to-json-${TRAVIS_TAG}-windows-amd64.exe
+  skip_cleanup: true
+  on:
+    tags: true
+
+before_install:
+  - go get github.com/mattn/goveralls
+
+install:
+  - GOOS=linux GOARCH=amd64 go build -o url-to-json-${TRAVIS_TAG}-linux-amd64
+  - GOOS=darwin GOARCH=amd64 go build -o url-to-json-${TRAVIS_TAG}-osx-amd64
+  - GOOS=windows GOARCH=amd64 go build -o url-to-json-${TRAVIS_TAG}-windows-amd64.exe
+
+script:
+  - go test -v ./... -coverprofile coverage.out
+
+after_success:
+  - $HOME/gopath/bin/goveralls -coverprofile coverage.out -service=travis-ci
