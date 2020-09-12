@@ -16,8 +16,11 @@ func TestProcess(t *testing.T) {
 	patch := monkey.Patch(os.Exit, fakeExit)
 	defer patch.Unpatch()
 
-	assert.Panics(t, func() { process([]string{"git-to-json"}) })
-	assert.NotPanics(t, func() { process([]string{"git-to-json", "/foobar"}) })
+	os.Args = []string{"git-to-json"}
+	assert.Panics(t, func() { main() })
+
+	os.Args = []string{"git-to-json", "/foobar"}
+	assert.NotPanics(t, func() { main() })
 }
 
 func TestHttpsUrl(t *testing.T) {

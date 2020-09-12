@@ -30,16 +30,12 @@ type jsonURL struct {
 }
 
 func main() {
-	process(os.Args)
-}
-
-func process(args []string) {
-	if len(args) != 2 {
+	if len(os.Args) != 2 {
 		fmt.Println("Usage: url-to-json <url>")
 		os.Exit(-1)
 	}
 
-	jsonUrl := urlToJson(args[1])
+	jsonUrl := urlToJson(os.Args[1])
 	jsonString, err := json.Marshal(jsonUrl)
 	panicOnError(err)
 	fmt.Println(string(jsonString))
