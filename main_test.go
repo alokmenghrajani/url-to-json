@@ -40,9 +40,9 @@ func TestHttpsUrl(t *testing.T) {
 }
 
 func TestGitUrl(t *testing.T) {
-	json := urlToJson("git@github.com:alokmenghrajani/url-to-json.git")
+	json := urlToJson("org-12345678@github.com:alokmenghrajani/url-to-json.git")
 	assert.Equal(t, "ssh", json.Scheme)
-	assert.Equal(t, "git", json.Username)
+	assert.Equal(t, "org-12345678", json.Username)
 	assert.Equal(t, "github.com", json.Host)
 	assert.Equal(t, "alokmenghrajani", json.Path[0])
 	assert.Equal(t, "url-to-json.git", json.Path[1])
